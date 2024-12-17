@@ -27,7 +27,7 @@ jobs:
         with:
           errors: true
           method: chat.postMessage
-          token: ${{ secrets.DABLE_BOT_CI_TOKEN }}
+          token: ${{ secrets.SLACK_TOKEN }}
           payload: |
             channel: "#dev-front-test"
             username: "Deploy Bot"
