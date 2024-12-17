@@ -1,0 +1,46 @@
+name: Notify Deployment
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - temp-test
+    paths-ignore:
+      - "test/**"
+      - "**/*.test.js"
+      - "**/*.spec.js"
+      - ".eslintrc.json"
+      - ".gitignore"
+      - ".mocharc.yaml"
+      - ".npmrc"
+      - ".nycrc"
+      - "README.md"
+
+jobs:
+  notify-to-slack:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Deployment Notification
+        uses: slackapi/slack-github-action@v2.0.0
+        with:
+          errors: true
+          method: chat.postMessage
+          token: ${{ secrets.DABLE_BOT_CI_TOKEN }}
+          payload: |
+            channel: "#dev-front-test"
+            username: "Deploy Bot"
+            icon_emoji: ":robot_face:"
+            text: "${{github.repository}} Deployed 🚀"
+            blocks:
+              - type: "header"
+                text:
+                  type: "plain_text"
+                  text: "${{ github.repository }} Deployed 🚀"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: |
+                    Title: ${{ github.event.pull_request.title}}
+                    PR: ${{ github.event.pull_request.html_url }}
+                    Merged by: `${{ github.event.pull_request.user.login }}`
